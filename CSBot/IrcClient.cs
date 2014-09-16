@@ -16,6 +16,8 @@ namespace CSBot
 		StreamWriter writer;
 		bool disposed;
 
+		public override object InitializeLifetimeService() { return null; }
+
 		public IrcClient(ModuleManager moduleManager, IrcClientSetup setup)
 		{
 			ModuleManager = moduleManager;

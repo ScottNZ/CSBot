@@ -10,6 +10,8 @@ namespace CSBot
 	{
 		public AppDomain Domain { get; internal set; }
 		public CSBotModule Module { get; internal set; }
+
+		public override object InitializeLifetimeService() { return null; }
 	}
 
 	public class ModuleManager : MarshalByRefObject
@@ -37,6 +39,8 @@ namespace CSBot
 				var moduleFilename = Path.Combine(modulesDirectory, new AssemblyName(args.Name).Name + ".dll");
 				return Assembly.Load(File.ReadAllBytes(moduleFilename));
 			}
+
+			public override object InitializeLifetimeService() { return null; }
 		}
 
 		class DeferredModuleLoad
@@ -49,6 +53,8 @@ namespace CSBot
 		readonly string appDirectory;
 		readonly string modulesDirectory;
 		readonly List<DeferredModuleLoad> defers = new List<DeferredModuleLoad>();
+
+		public override object InitializeLifetimeService() { return null; }
 
 		public ModuleManager()
 		{

@@ -15,6 +15,8 @@ namespace CSBot
 		public string AdminUser { get; set; }
 		public string[] AutoJoinChannels { get; set; }
 
+		public override object InitializeLifetimeService() { return null; }
+
 		public static IrcClientSetup Deserialize(TextReader textReader)
 		{
 			var serializer = new XmlSerializer(typeof(IrcClientSetup));
