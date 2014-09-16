@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E656C1BB-C79B-4566-9C93-A814085D1455}</ProjectGuid>
+    <ProjectGuid>{B64E8D96-A49B-44FA-A0F6-6BBB3F67969E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ModuleLoaderModule</RootNamespace>
-    <AssemblyName>ModuleLoaderModule</AssemblyName>
+    <RootNamespace>AdminModule</RootNamespace>
+    <AssemblyName>AdminModule</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,7 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ModuleLoader.cs" />
+    <Compile Include="Admin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
