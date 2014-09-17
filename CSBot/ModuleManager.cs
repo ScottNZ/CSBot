@@ -127,10 +127,14 @@ namespace CSBot
 		{
 			foreach (var defer in defers)
 			{
-				if (defer.IsLoad)
-					LoadModule(defer.Filename);
-				else
-					UnloadModule(defer.Filename);
+				try
+				{
+					if (defer.IsLoad)
+						LoadModule(defer.Filename);
+					else
+						UnloadModule(defer.Filename);
+				}
+				catch { }
 			}
 			defers.Clear();
 		}
