@@ -74,6 +74,11 @@ namespace CSBot
 			writer.WriteLine(format, args);
 		}
 
+		public void WriteLine(string line)
+		{
+			writer.WriteLine(line);
+		}
+
 		public void Close()
 		{
 			disposed = true;
