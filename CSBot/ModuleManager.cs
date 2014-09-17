@@ -123,7 +123,14 @@ namespace CSBot
 			defers.Add(new DeferredModuleLoad { IsLoad = false, Filename = filename });
 		}
 
-		public void ProcessDeferredModuleLoads()
+		internal void InvokeRootModules(Action<CSBotModule> func)
+		{
+			foreach (var module in LoadedModules)
+				func(module.Value.Module);
+			ProcessDeferredModuleLoads();
+		}
+
+		internal void ProcessDeferredModuleLoads()
 		{
 			foreach (var defer in defers)
 			{

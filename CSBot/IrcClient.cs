@@ -36,7 +36,7 @@ namespace CSBot
 			reader = new StreamReader(stream);
 			writer = new StreamWriter(stream) { AutoFlush = true };
 			Console.WriteLine("Connected");
-			RootInvokeModules(m => m.OnConnect(this));
+			ModuleManager.InvokeRootModules(m => m.OnConnect(this));
 			try
 			{
 				string l;
@@ -44,7 +44,7 @@ namespace CSBot
 				{
 					var line = l;
 					Console.WriteLine(line);
-					RootInvokeModules(m => m.OnLineRead(this, line));
+					ModuleManager.InvokeRootModules(m => m.OnLineRead(this, line));
 				}
 			}
 			finally
@@ -58,15 +58,8 @@ namespace CSBot
 				if (writer != null)
 					writer.Close();
 				Console.WriteLine("Disconnected");
-				RootInvokeModules(m => m.OnDisconnect(this));
+				ModuleManager.InvokeRootModules(m => m.OnDisconnect(this));
 			}
-		}
-
-		void RootInvokeModules(Action<CSBotModule> func)
-		{
-			foreach (var module in ModuleManager.LoadedModules)
-				func(module.Value.Module);
-			ModuleManager.ProcessDeferredModuleLoads();
 		}
 
 		public void WriteLine(string format, params object[] args)
