@@ -22,6 +22,8 @@ namespace AdminModule
 				}
 				else if (message.Equals("!loadedmods", StringComparison.OrdinalIgnoreCase))
 					client.SendMessage(target, string.Join(", ", client.ModuleManager.LoadedModules.Keys));
+				else if (message.StartsWith("!send ", StringComparison.OrdinalIgnoreCase))
+					client.WriteLine(message.Substring(message.IndexOf(' ') + 1));
 			}
 		}
 	}
