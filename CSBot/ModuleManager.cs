@@ -27,17 +27,17 @@ namespace CSBot
 				if (type == null)
 					return null;
 
-				AppDomain.CurrentDomain.AssemblyResolve += ResolveModule;
+				AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 
 				return (CSBotModule)Activator.CreateInstance(type);
 			}
 
-			Assembly ResolveModule(object sender, ResolveEventArgs args)
+			Assembly ResolveAssembly(object sender, ResolveEventArgs args)
 			{
 				var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
 				var modulesDirectory = Path.Combine(appDirectory, "Modules");
-				var moduleFilename = Path.Combine(modulesDirectory, new AssemblyName(args.Name).Name + ".dll");
-				return Assembly.Load(File.ReadAllBytes(moduleFilename));
+				var filename = Path.Combine(modulesDirectory, new AssemblyName(args.Name).Name + ".dll");
+				return Assembly.Load(File.ReadAllBytes(filename));
 			}
 
 			public override object InitializeLifetimeService() { return null; }
