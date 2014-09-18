@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CSBot;
 
 namespace IrcLogicModule
@@ -28,6 +29,16 @@ namespace IrcLogicModule
 		public static void SendMessage(this IrcClient client, string target, string message)
 		{
 			client.WriteLine("PRIVMSG {0} :{1}", target, message);
+		}
+
+		public static void SendMessageReply(this IrcClient client, string user, string target, string message)
+		{
+			client.SendMessage(IsChannel(target) ? target : User.Parse(user).Nickname, message);
+		}
+
+		public static bool IsChannel(string target)
+		{
+			return !string.IsNullOrEmpty(target) && "#&+!".Any(p => p == target[0]);
 		}
 
 		internal static void InvokeModules(IrcClient client, Action<CSBotModule> func)

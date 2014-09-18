@@ -32,8 +32,11 @@ namespace IrcLogicModule
 						break;
 					case "PRIVMSG":
 						var message = parts[3].Substring(1);
-						if (target.StartsWith("#"))
+						Utils.InvokeModules(client, m => m.OnMessage(client, user, target, message));
+						if (Utils.IsChannel(target))
 							Utils.InvokeModules(client, m => m.OnPublicMessage(client, user, target, message));
+						else
+							Utils.InvokeModules(client, m => m.OnPrivateMessage(client, user, target, message));
 						break;
 				}
 			}
