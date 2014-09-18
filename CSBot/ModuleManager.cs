@@ -86,6 +86,7 @@ namespace CSBot
 				var module = loader.LoadModule(path);
 				if (module != null)
 				{
+					module.ModuleManager = this;
 					LoadedModules.Add(filename, new LoadedModule { Domain = domain, Module = module });
 
 					Console.WriteLine("Loaded {0}", filename);

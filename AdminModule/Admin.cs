@@ -13,17 +13,17 @@ namespace AdminModule
 				if (message.StartsWith("!loadmod ", StringComparison.OrdinalIgnoreCase))
 				{
 					var filename = message.Substring(message.IndexOf(' ') + 1);
-					client.ModuleManager.LoadModuleDeferred(filename);
+					ModuleManager.LoadModuleDeferred(filename);
 				}
 
 				else if (message.StartsWith("!unloadmod ", StringComparison.OrdinalIgnoreCase))
 				{
 					var filename = message.Substring(message.IndexOf(' ') + 1);
-					client.ModuleManager.UnloadModuleDeferred(filename);
+					ModuleManager.UnloadModuleDeferred(filename);
 				}
 
 				else if (message.Equals("!loadedmods", StringComparison.OrdinalIgnoreCase))
-					client.SendMessageReply(user, target, string.Join(", ", client.ModuleManager.LoadedModules.Keys));
+					client.SendMessageReply(user, target, string.Join(", ", ModuleManager.LoadedModules.Keys));
 
 				else if (message.StartsWith("!send ", StringComparison.OrdinalIgnoreCase))
 					client.WriteLine(message.Substring(message.IndexOf(' ') + 1));

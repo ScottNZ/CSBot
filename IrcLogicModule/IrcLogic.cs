@@ -1,4 +1,5 @@
 ﻿
+using System.Reflection;
 using CSBot;
 
 namespace IrcLogicModule
@@ -28,15 +29,15 @@ namespace IrcLogicModule
 				switch (command)
 				{
 					case "001":
-						Utils.InvokeModules(client, m => m.OnRegister(client));
+						ModuleManager.InvokeModules(m => m.OnRegister(client));
 						break;
 					case "PRIVMSG":
 						var message = parts[3].Substring(1);
-						Utils.InvokeModules(client, m => m.OnMessage(client, user, target, message));
+						ModuleManager.InvokeModules(m => m.OnMessage(client, user, target, message));
 						if (Utils.IsChannel(target))
-							Utils.InvokeModules(client, m => m.OnPublicMessage(client, user, target, message));
+							ModuleManager.InvokeModules(m => m.OnPublicMessage(client, user, target, message));
 						else
-							Utils.InvokeModules(client, m => m.OnPrivateMessage(client, user, target, message));
+							ModuleManager.InvokeModules(m => m.OnPrivateMessage(client, user, target, message));
 						break;
 				}
 			}

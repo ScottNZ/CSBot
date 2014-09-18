@@ -6,6 +6,8 @@ namespace CSBot
 	{
 		public override object InitializeLifetimeService() { return null; }
 
+		public ModuleManager ModuleManager { get; internal set; }
+
 		public virtual void OnConnect(IrcClient client) { }
 		public virtual void OnDisconnect(IrcClient client) { }
 		public virtual void OnLineRead(IrcClient client, string line) { }

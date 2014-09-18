@@ -41,9 +41,9 @@ namespace IrcLogicModule
 			return !string.IsNullOrEmpty(target) && "#&+!".Any(p => p == target[0]);
 		}
 
-		internal static void InvokeModules(IrcClient client, Action<CSBotModule> func)
+		internal static void InvokeModules(this ModuleManager self, Action<CSBotModule> func)
 		{
-			foreach (var module in client.ModuleManager.LoadedModules)
+			foreach (var module in self.LoadedModules)
 				func(module.Value.Module);
 		}
 	}

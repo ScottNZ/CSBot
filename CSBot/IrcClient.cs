@@ -8,8 +8,8 @@ namespace CSBot
 	{
 		public string Nickname { get; private set; }
 		public IrcClientSetup Setup { get; private set; }
-		public ModuleManager ModuleManager { get; private set; }
 
+		readonly ModuleManager moduleManager;
 		TcpClient socket;
 		NetworkStream stream;
 		StreamReader reader;
@@ -20,7 +20,7 @@ namespace CSBot
 
 		public IrcClient(ModuleManager moduleManager, IrcClientSetup setup)
 		{
-			ModuleManager = moduleManager;
+			this.moduleManager = moduleManager;
 			Setup = setup;
 		}
 
@@ -36,7 +36,7 @@ namespace CSBot
 			reader = new StreamReader(stream);
 			writer = new StreamWriter(stream) { AutoFlush = true };
 			Console.WriteLine("Connected");
-			ModuleManager.InvokeRootModules(m => m.OnConnect(this));
+			moduleManager.InvokeRootModules(m => m.OnConnect(this));
 			try
 			{
 				string l;
@@ -44,7 +44,7 @@ namespace CSBot
 				{
 					var line = l;
 					Console.WriteLine(line);
-					ModuleManager.InvokeRootModules(m => m.OnLineRead(this, line));
+					moduleManager.InvokeRootModules(m => m.OnLineRead(this, line));
 				}
 			}
 			finally
@@ -58,7 +58,7 @@ namespace CSBot
 				if (writer != null)
 					writer.Close();
 				Console.WriteLine("Disconnected");
-				ModuleManager.InvokeRootModules(m => m.OnDisconnect(this));
+				moduleManager.InvokeRootModules(m => m.OnDisconnect(this));
 			}
 		}
 
