@@ -18,6 +18,9 @@ namespace CSBot
 		public virtual void OnNotice(IrcClient client, string user, string target, string message) { }
 		public virtual void OnPublicNotice(IrcClient client, string user, string target, string message) { }
 		public virtual void OnPrivateNotice(IrcClient client, string user, string target, string message) { }
+		public virtual void OnCtcp(IrcClient client, string user, string target, string message) { }
+		public virtual void OnPublicCtcp(IrcClient client, string user, string target, string message) { }
+		public virtual void OnPrivateCtcp(IrcClient client, string user, string target, string message) { }
 		public virtual void OnJoin(IrcClient client, string user, string channel) { }
 		public virtual void OnPart(IrcClient client, string user, string channel, string message) { }
 		public virtual void OnQuit(IrcClient client, string user, string message) { }
@@ -25,5 +28,6 @@ namespace CSBot
 		public virtual void OnTopic(IrcClient client, string user, string channel, string topic) { }
 		public virtual void OnKick(IrcClient client, string user, string channel, string targetUser, string message) { }
 		public virtual void OnInvite(IrcClient client, string user, string channel) { }
+		public virtual void OnNick(IrcClient client, string user, string nickname) { }
 	}
 }
