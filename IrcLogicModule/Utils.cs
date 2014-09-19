@@ -44,7 +44,16 @@ namespace IrcLogicModule
 		internal static void InvokeModules(this ModuleManager self, Action<CSBotModule> func)
 		{
 			foreach (var module in self.LoadedModules)
-				func(module.Value.Module);
+			{
+				try
+				{
+					func(module.Value.Module);
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+				}
+			}
 		}
 	}
 }

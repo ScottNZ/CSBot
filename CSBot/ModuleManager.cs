@@ -127,7 +127,16 @@ namespace CSBot
 		internal void InvokeRootModules(Action<CSBotModule> func)
 		{
 			foreach (var module in LoadedModules)
-				func(module.Value.Module);
+			{
+				try
+				{
+					func(module.Value.Module);
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+				}	
+			}
 			ProcessDeferredModuleLoads();
 		}
 
@@ -142,7 +151,10 @@ namespace CSBot
 					else
 						UnloadModule(defer.Filename);
 				}
-				catch { }
+				catch (Exception e)
+				{
+					Console.WriteLine(e);
+				}
 			}
 			defers.Clear();
 		}
