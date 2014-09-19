@@ -6,7 +6,6 @@ namespace CSBot
 {
 	public class IrcClient : MarshalByRefObject, IDisposable
 	{
-		public string Nickname { get; private set; }
 		public IrcClientSetup Setup { get; private set; }
 
 		readonly ModuleManager moduleManager;

@@ -1,6 +1,4 @@
-﻿
-using System.Reflection;
-using CSBot;
+﻿using CSBot;
 
 namespace IrcLogicModule
 {
