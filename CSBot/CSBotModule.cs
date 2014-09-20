@@ -28,6 +28,6 @@ namespace CSBot
 		public virtual void OnTopic(IrcClient client, string user, string channel, string topic) { }
 		public virtual void OnKick(IrcClient client, string user, string channel, string targetUser, string message) { }
 		public virtual void OnInvite(IrcClient client, string user, string channel) { }
-		public virtual void OnNick(IrcClient client, string user, string nickname) { }
+		public virtual void OnNick(IrcClient client, string user, string newNickname) { }
 	}
 }
