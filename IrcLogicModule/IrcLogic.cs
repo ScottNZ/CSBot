@@ -77,6 +77,15 @@ namespace IrcLogicModule
 					case "NICK":
 						ModuleManager.InvokeModules(m => m.OnNick(client, user, args.Substring(args.IndexOf(':') + 1)));
 						break;
+					case "KICK":
+						{
+							var argsSplit = args.Split(new[] { ' ' }, 3);
+							var channel = argsSplit[0];
+							var targetNickname = argsSplit[1];
+							var message = argsSplit.Length >= 3 ? argsSplit[2].Substring(1) : null;
+							ModuleManager.InvokeModules(m => m.OnKick(client, user, channel, targetNickname, message));
+						}
+						break;
 				}
 			}
 		}

@@ -26,7 +26,7 @@ namespace CSBot
 		public virtual void OnQuit(IrcClient client, string user, string message) { }
 		public virtual void OnMode(IrcClient client, string user, string targetUser, string modes) { }
 		public virtual void OnTopic(IrcClient client, string user, string channel, string topic) { }
-		public virtual void OnKick(IrcClient client, string user, string channel, string targetUser, string message) { }
+		public virtual void OnKick(IrcClient client, string user, string channel, string targetNickname, string message) { }
 		public virtual void OnInvite(IrcClient client, string user, string channel) { }
 		public virtual void OnNick(IrcClient client, string user, string newNickname) { }
 	}
