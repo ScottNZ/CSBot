@@ -140,7 +140,7 @@ namespace CSBot
 			ProcessDeferredModuleLoads();
 		}
 
-		internal void ProcessDeferredModuleLoads()
+		void ProcessDeferredModuleLoads()
 		{
 			foreach (var defer in defers)
 			{

@@ -1,6 +1,6 @@
 ﻿namespace IrcLogicModule
 {
-	class User
+	public class User
 	{
 		public string Nickname { get; private set; }
 		public string Username { get; private set; }
