@@ -31,9 +31,19 @@ namespace IrcLogicModule
 			client.WriteLine("PRIVMSG {0} :{1}", target, message);
 		}
 
+		public static void SendMessage(this IrcClient client, string target, string format, params object[] args)
+		{
+			client.SendMessage(target, string.Format(format, args));
+		}
+
 		public static void SendMessageReply(this IrcClient client, string user, string target, string message)
 		{
 			client.SendMessage(IsChannel(target) ? target : User.Parse(user).Nickname, message);
+		}
+
+		public static void SendMessageReply(this IrcClient client, string user, string target, string format, params object[] args)
+		{
+			client.SendMessageReply(user, target, string.Format(format, args));
 		}
 
 		public static bool IsChannel(string target)
