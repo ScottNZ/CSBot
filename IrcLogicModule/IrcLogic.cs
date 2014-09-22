@@ -55,14 +55,14 @@ namespace IrcLogicModule
 					case "JOIN":
 						{
 							var colon = args.IndexOf(':');
-							var channel = colon != -1 ? args.Substring(colon + 1) : args.Substring(0, args.IndexOf(' '));
+							var channel = colon != -1 ? args.Substring(colon + 1) : args;
 							ModuleManager.InvokeModules(m => m.OnJoin(client, user, channel));
 						}
 						break;
 					case "PART":
 						{
 							var colon = args.IndexOf(':');
-							var channel = args.Substring(0, args.IndexOf(' '));
+							var channel = colon != -1 ? args.Substring(0, args.IndexOf(' ')) : args;
 							var message = colon != -1 ? args.Substring(colon + 1) : null;
 							ModuleManager.InvokeModules(m => m.OnPart(client, user, channel, message));
 						}
