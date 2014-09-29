@@ -5,18 +5,12 @@ namespace IrcLogicModule
 	// Having most of the logic in its own module allows you to change most of it without having to restart the bot.
 	public class IrcLogic : CSBotModule
 	{
-		public override void OnConnect(IrcClient client)
-		{
-			client.SendNickname(client.Setup.Nickname);
-			client.SendUsername(client.Setup.Username ?? client.Setup.Nickname, client.Setup.Realname ?? client.Setup.Nickname);
-		}
-
-		public override void OnLineRead(IrcClient client, string line)
+		public override void OnLineRead(string line)
 		{
 			var parts = line.Split(new[] { ' ' }, 3);
 
 			if (parts[0] == "PING")
-				client.Pong(parts[1]);
+				Client.Pong(parts[1]);
 
 			if (parts[0].StartsWith(":"))
 			{
@@ -27,7 +21,7 @@ namespace IrcLogicModule
 				switch (command)
 				{
 					case "001":
-						ModuleManager.InvokeModules(m => m.OnRegister(client));
+						ModuleManager.InvokeModules(m => m.OnRegister());
 						break;
 					case "NOTICE":
 					case "PRIVMSG":
@@ -36,19 +30,19 @@ namespace IrcLogicModule
 							var message = args.Substring(args.IndexOf(':') + 1);
 							if (command == "PRIVMSG")
 							{
-								ModuleManager.InvokeModules(m => m.OnMessage(client, user, target, message));
+								ModuleManager.InvokeModules(m => m.OnMessage(user, target, message));
 								if (Utils.IsChannel(target))
-									ModuleManager.InvokeModules(m => m.OnPublicMessage(client, user, target, message));
+									ModuleManager.InvokeModules(m => m.OnPublicMessage(user, target, message));
 								else
-									ModuleManager.InvokeModules(m => m.OnPrivateMessage(client, user, target, message));
+									ModuleManager.InvokeModules(m => m.OnPrivateMessage(user, target, message));
 							}
 							else
 							{
-								ModuleManager.InvokeModules(m => m.OnNotice(client, user, target, message));
+								ModuleManager.InvokeModules(m => m.OnNotice(user, target, message));
 								if (Utils.IsChannel(target))
-									ModuleManager.InvokeModules(m => m.OnPublicNotice(client, user, target, message));
+									ModuleManager.InvokeModules(m => m.OnPublicNotice(user, target, message));
 								else
-									ModuleManager.InvokeModules(m => m.OnPrivateNotice(client, user, target, message));
+									ModuleManager.InvokeModules(m => m.OnPrivateNotice(user, target, message));
 							}
 						}
 						break;
@@ -56,7 +50,7 @@ namespace IrcLogicModule
 						{
 							var colon = args.IndexOf(':');
 							var channel = colon != -1 ? args.Substring(colon + 1) : args;
-							ModuleManager.InvokeModules(m => m.OnJoin(client, user, channel));
+							ModuleManager.InvokeModules(m => m.OnJoin(user, channel));
 						}
 						break;
 					case "PART":
@@ -64,18 +58,18 @@ namespace IrcLogicModule
 							var colon = args.IndexOf(':');
 							var channel = colon != -1 ? args.Substring(0, args.IndexOf(' ')) : args;
 							var message = colon != -1 ? args.Substring(colon + 1) : null;
-							ModuleManager.InvokeModules(m => m.OnPart(client, user, channel, message));
+							ModuleManager.InvokeModules(m => m.OnPart(user, channel, message));
 						}
 						break;
 					case "QUIT":
 						{
 							var colon = args.IndexOf(':');
 							var message = colon != -1 ? args.Substring(colon + 1) : null;
-							ModuleManager.InvokeModules(m => m.OnQuit(client, user, message));
+							ModuleManager.InvokeModules(m => m.OnQuit(user, message));
 						}
 						break;
 					case "NICK":
-						ModuleManager.InvokeModules(m => m.OnNick(client, user, args.Substring(args.IndexOf(':') + 1)));
+						ModuleManager.InvokeModules(m => m.OnNick(user, args.Substring(args.IndexOf(':') + 1)));
 						break;
 					case "KICK":
 						{
@@ -83,17 +77,23 @@ namespace IrcLogicModule
 							var channel = argsSplit[0];
 							var targetNickname = argsSplit[1];
 							var message = argsSplit.Length >= 3 ? argsSplit[2].Substring(1) : null;
-							ModuleManager.InvokeModules(m => m.OnKick(client, user, channel, targetNickname, message));
+							ModuleManager.InvokeModules(m => m.OnKick(user, channel, targetNickname, message));
 						}
 						break;
 				}
 			}
 		}
 
-		public override void OnRegister(IrcClient client)
+		public override void OnConnect()
 		{
-			foreach (var channel in client.Setup.AutoJoinChannels)
-				client.Join(channel);
+			Client.SendNickname(Client.Setup.Nickname);
+			Client.SendUsername(Client.Setup.Username ?? Client.Setup.Nickname, Client.Setup.Realname ?? Client.Setup.Nickname);
+		}
+
+		public override void OnRegister()
+		{
+			foreach (var channel in Client.Setup.AutoJoinChannels)
+				Client.Join(channel);
 		}
 	}
 }

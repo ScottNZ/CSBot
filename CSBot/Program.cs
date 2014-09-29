@@ -11,11 +11,12 @@ namespace CSBot
 			IrcClientSetup setup;
 			using (var streamReader = new StreamReader(setupFilename))
 				setup = IrcClientSetup.Deserialize(streamReader);
+			
+			var client = new IrcClient(setup);
 
-			var moduleManager = new ModuleManager();
+			var moduleManager = new ModuleManager(client);
 			moduleManager.LoadAllModules();
 
-			var client = new IrcClient(moduleManager, setup);
 			client.Connect();
 		}
 	}

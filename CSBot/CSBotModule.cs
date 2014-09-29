@@ -7,27 +7,28 @@ namespace CSBot
 		public override object InitializeLifetimeService() { return null; }
 
 		public ModuleManager ModuleManager { get; internal set; }
+		public IrcClient Client { get; internal set; }
 
-		public virtual void OnConnect(IrcClient client) { }
-		public virtual void OnDisconnect(IrcClient client) { }
-		public virtual void OnLineRead(IrcClient client, string line) { }
-		public virtual void OnRegister(IrcClient client) { }
-		public virtual void OnMessage(IrcClient client, string user, string target, string message) { }
-		public virtual void OnPublicMessage(IrcClient client, string user, string target, string message) { }
-		public virtual void OnPrivateMessage(IrcClient client, string user, string target, string message) { }
-		public virtual void OnNotice(IrcClient client, string user, string target, string message) { }
-		public virtual void OnPublicNotice(IrcClient client, string user, string target, string message) { }
-		public virtual void OnPrivateNotice(IrcClient client, string user, string target, string message) { }
-		public virtual void OnCtcp(IrcClient client, string user, string target, string message) { }
-		public virtual void OnPublicCtcp(IrcClient client, string user, string target, string message) { }
-		public virtual void OnPrivateCtcp(IrcClient client, string user, string target, string message) { }
-		public virtual void OnJoin(IrcClient client, string user, string channel) { }
-		public virtual void OnPart(IrcClient client, string user, string channel, string message) { }
-		public virtual void OnQuit(IrcClient client, string user, string message) { }
-		public virtual void OnMode(IrcClient client, string user, string targetUser, string modes) { }
-		public virtual void OnTopic(IrcClient client, string user, string channel, string topic) { }
-		public virtual void OnKick(IrcClient client, string user, string channel, string targetNickname, string message) { }
-		public virtual void OnInvite(IrcClient client, string user, string channel) { }
-		public virtual void OnNick(IrcClient client, string user, string newNickname) { }
+		public virtual void OnConnect() { }
+		public virtual void OnDisconnect() { }
+		public virtual void OnLineRead(string line) { }
+		public virtual void OnRegister() { }
+		public virtual void OnMessage(string user, string target, string message) { }
+		public virtual void OnPublicMessage(string user, string target, string message) { }
+		public virtual void OnPrivateMessage(string user, string target, string message) { }
+		public virtual void OnNotice(string user, string target, string message) { }
+		public virtual void OnPublicNotice(string user, string target, string message) { }
+		public virtual void OnPrivateNotice(string user, string target, string message) { }
+		public virtual void OnCtcp(string user, string target, string message) { }
+		public virtual void OnPublicCtcp(string user, string target, string message) { }
+		public virtual void OnPrivateCtcp(string user, string target, string message) { }
+		public virtual void OnJoin(string user, string channel) { }
+		public virtual void OnPart(string user, string channel, string message) { }
+		public virtual void OnQuit(string user, string message) { }
+		public virtual void OnMode(string user, string targetUser, string modes) { }
+		public virtual void OnTopic(string user, string channel, string topic) { }
+		public virtual void OnKick(string user, string channel, string targetNickname, string message) { }
+		public virtual void OnInvite(string user, string channel) { }
+		public virtual void OnNick(string user, string newNickname) { }
 	}
 }

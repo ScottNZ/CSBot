@@ -8,7 +8,10 @@ namespace CSBot
 	{
 		public IrcClientSetup Setup { get; private set; }
 
-		readonly ModuleManager moduleManager;
+		internal event Action OnConnect = () => { };
+		internal event Action<string> OnLineRead = l => { };
+		internal event Action OnDisconnect = () => { };
+
 		TcpClient socket;
 		NetworkStream stream;
 		StreamReader reader;
@@ -17,9 +20,8 @@ namespace CSBot
 
 		public override object InitializeLifetimeService() { return null; }
 
-		public IrcClient(ModuleManager moduleManager, IrcClientSetup setup)
+		public IrcClient(IrcClientSetup setup)
 		{
-			this.moduleManager = moduleManager;
 			Setup = setup;
 		}
 
@@ -35,7 +37,7 @@ namespace CSBot
 			reader = new StreamReader(stream);
 			writer = new StreamWriter(stream) { AutoFlush = true };
 			Console.WriteLine("Connected");
-			moduleManager.InvokeRootModules(m => m.OnConnect(this));
+			OnConnect();
 			try
 			{
 				string l;
@@ -43,7 +45,7 @@ namespace CSBot
 				{
 					var line = l;
 					Console.WriteLine(line);
-					moduleManager.InvokeRootModules(m => m.OnLineRead(this, line));
+					OnLineRead(line);
 				}
 			}
 			finally
@@ -57,7 +59,7 @@ namespace CSBot
 				if (writer != null)
 					writer.Close();
 				Console.WriteLine("Disconnected");
-				moduleManager.InvokeRootModules(m => m.OnDisconnect(this));
+				OnDisconnect();
 			}
 		}
 

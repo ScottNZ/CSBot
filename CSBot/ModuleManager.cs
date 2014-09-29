@@ -50,18 +50,25 @@ namespace CSBot
 		}
 
 		public IDictionary<string, LoadedModule> LoadedModules { get; private set; }
+
 		readonly string appDirectory;
 		readonly string modulesDirectory;
 		readonly List<DeferredModuleLoad> defers = new List<DeferredModuleLoad>();
+		readonly IrcClient client;
 
 		public override object InitializeLifetimeService() { return null; }
 
-		public ModuleManager()
+		public ModuleManager(IrcClient client)
 		{
 			LoadedModules = new Dictionary<string, LoadedModule>();
 			appDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 			modulesDirectory = Path.Combine(appDirectory, "Modules");
 			Directory.CreateDirectory(modulesDirectory);
+
+			this.client = client;
+			client.OnConnect += () => InvokeModules(m => m.OnConnect());
+			client.OnLineRead += l => InvokeModules(m => m.OnLineRead(l));
+			client.OnDisconnect += () => InvokeModules(m => m.OnDisconnect());
 		}
 
 		public void LoadAllModules()
@@ -87,6 +94,7 @@ namespace CSBot
 				if (module != null)
 				{
 					module.ModuleManager = this;
+					module.Client = client;
 					LoadedModules.Add(filename, new LoadedModule { Domain = domain, Module = module });
 
 					Console.WriteLine("Loaded {0}", filename);
@@ -124,7 +132,7 @@ namespace CSBot
 			defers.Add(new DeferredModuleLoad { IsLoad = false, Filename = filename });
 		}
 
-		internal void InvokeRootModules(Action<CSBotModule> func)
+		void InvokeModules(Action<CSBotModule> func)
 		{
 			foreach (var module in LoadedModules)
 			{
