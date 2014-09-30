@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Timers;
 
 namespace CSBot
 {
@@ -38,6 +41,10 @@ namespace CSBot
 			writer = new StreamWriter(stream) { AutoFlush = true };
 			Console.WriteLine("Connected");
 			OnConnect();
+
+			throttleTimer.Elapsed += ThrottleTimerElapsed;
+			throttleTimer.Start();
+
 			try
 			{
 				string l;
@@ -50,6 +57,8 @@ namespace CSBot
 			}
 			finally
 			{
+				throttleTimer.Stop();
+
 				if (socket != null)
 					socket.Close();
 				if (stream != null)
@@ -65,12 +74,12 @@ namespace CSBot
 
 		public void WriteLine(string format, params object[] args)
 		{
-			writer.WriteLine(format, args);
+			WriteLine(string.Format(format, args));
 		}
 
 		public void WriteLine(string line)
 		{
-			writer.WriteLine(line);
+			sendQueue.Enqueue(line);
 		}
 
 		public void Close()
@@ -81,6 +90,26 @@ namespace CSBot
 		void IDisposable.Dispose()
 		{
 			Close();
+		}
+
+		// todo: move to IrcLogic
+		const int MaxThrottleDelay = 1000;
+		readonly Timer throttleTimer = new Timer(MaxThrottleDelay / 10);
+		readonly ConcurrentQueue<string> sendQueue = new ConcurrentQueue<string>();
+		int throttleDelay;
+
+		void ThrottleTimerElapsed(object sender, ElapsedEventArgs e)
+		{
+			throttleDelay = Math.Max(throttleDelay - MaxThrottleDelay / 10, 0);
+			if (throttleDelay == 0 && !disposed)
+			{
+				string line;
+				if (sendQueue.TryDequeue(out line))
+				{
+					writer.WriteLine(line);
+					throttleDelay += MaxThrottleDelay;
+				}
+			}
 		}
 	}
 }
