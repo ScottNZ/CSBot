@@ -20,14 +20,14 @@ namespace CSBot
 		{
 			public CSBotModule LoadModule(string path)
 			{
+				AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+
 				var type = Assembly.Load(File.ReadAllBytes(path))
 					.GetTypes()
 					.FirstOrDefault(typeof(CSBotModule).IsAssignableFrom);
 
 				if (type == null)
 					return null;
-
-				AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
 
 				return (CSBotModule)Activator.CreateInstance(type);
 			}
