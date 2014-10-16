@@ -86,6 +86,8 @@ namespace IrcLogicModule
 
 		public override void OnConnect()
 		{
+			if (Client.Setup.Password != null)
+				Client.SendPassword(Client.Setup.Password);
 			Client.SendNickname(Client.Setup.Nickname);
 			Client.SendUsername(Client.Setup.Username ?? Client.Setup.Nickname, Client.Setup.Realname ?? Client.Setup.Nickname);
 		}

@@ -26,6 +26,11 @@ namespace IrcLogicModule
 			client.WriteLine("USER {0} 0 * :{1}", username, realname);
 		}
 
+		public static void SendPassword(this IrcClient client, string password)
+		{
+			client.WriteLine("PASS {0}", password);
+		}
+
 		public static void SendMessage(this IrcClient client, string target, string message)
 		{
 			client.WriteLine("PRIVMSG {0} :{1}", target, message);

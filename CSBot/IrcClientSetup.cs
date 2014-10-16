@@ -12,6 +12,7 @@ namespace CSBot
 		public string ServerHostname { get; set; }
 		public int Port { get; set; }
 		public int IOTimeout { get; set; }
+		public string Password { get; set; }
 		public string AdminUser { get; set; }
 		public string[] AutoJoinChannels { get; set; }
 
