@@ -27,10 +27,11 @@ namespace AdminModule
 				Client.SendMessageReply(user, target, string.Join(", ", ModuleManager.LoadedModules.Keys));
 
 			else if (message.StartsWith("!send ", StringComparison.OrdinalIgnoreCase))
-				Client.WriteLine(message.Substring(message.IndexOf(' ') + 1));
+				Client.WriteLine(message.Substring(message.IndexOf(' ') + 1).Replace("\\n", "\n"));
 
 			else if (message.StartsWith("!say ", StringComparison.OrdinalIgnoreCase))
-				Client.SendMessageReply(user, target, message.Substring(message.IndexOf(' ') + 1));
+				foreach (var line in message.Substring(message.IndexOf(' ') + 1).Split(new[] { "\\n" }, StringSplitOptions.RemoveEmptyEntries))
+					Client.SendMessageReply(user, target, line);
 		}
 	}
 }
