@@ -33,7 +33,7 @@
     <Compile Include="IrcLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="IrcUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CSBot\CSBot.csproj">

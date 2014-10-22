@@ -1,16 +1,48 @@
-﻿using CSBot;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Timers;
+using CSBot;
 
 namespace IrcLogicModule
 {
 	// Having most of the logic in its own module allows you to change most of it without having to restart the bot.
 	public class IrcLogic : CSBotModule
 	{
+		const int MaxThrottleDelay = 1000;
+		readonly ConcurrentQueue<string> sendQueue = new ConcurrentQueue<string>();
+		readonly Timer throttleTimer = new Timer(MaxThrottleDelay / 10);
+		int throttleDelay;
+
+		public IrcLogic()
+		{
+			throttleTimer.Elapsed += ThrottleTimerElapsed;
+			throttleTimer.Start();	
+		}
+
+		~IrcLogic()
+		{
+			throttleTimer.Stop();
+		}
+		void ThrottleTimerElapsed(object sender, ElapsedEventArgs e)
+		{
+			throttleDelay = Math.Max(throttleDelay - MaxThrottleDelay / 10, 0);
+			if (throttleDelay == 0 && Client.Connected)
+			{
+				string line;
+				if (sendQueue.TryDequeue(out line))
+				{
+					Client.WriteLine(line);
+					throttleDelay += MaxThrottleDelay;
+				}
+			}
+		}
+
 		public override void OnLineRead(string line)
 		{
 			var parts = line.Split(new[] { ' ' }, 3);
 
 			if (parts[0] == "PING")
-				Client.Pong(parts[1]);
+				this.Pong(parts[1]);
 
 			if (parts[0].StartsWith(":"))
 			{
@@ -31,7 +63,7 @@ namespace IrcLogicModule
 							if (command == "PRIVMSG")
 							{
 								ModuleManager.InvokeModules(m => m.OnMessage(user, target, message));
-								if (Utils.IsChannel(target))
+								if (IrcUtils.IsChannel(target))
 									ModuleManager.InvokeModules(m => m.OnPublicMessage(user, target, message));
 								else
 									ModuleManager.InvokeModules(m => m.OnPrivateMessage(user, target, message));
@@ -39,7 +71,7 @@ namespace IrcLogicModule
 							else
 							{
 								ModuleManager.InvokeModules(m => m.OnNotice(user, target, message));
-								if (Utils.IsChannel(target))
+								if (IrcUtils.IsChannel(target))
 									ModuleManager.InvokeModules(m => m.OnPublicNotice(user, target, message));
 								else
 									ModuleManager.InvokeModules(m => m.OnPrivateNotice(user, target, message));
@@ -87,15 +119,20 @@ namespace IrcLogicModule
 		public override void OnConnect()
 		{
 			if (Client.Setup.Password != null)
-				Client.SendPassword(Client.Setup.Password);
-			Client.SendNickname(Client.Setup.Nickname);
-			Client.SendUsername(Client.Setup.Username ?? Client.Setup.Nickname, Client.Setup.Realname ?? Client.Setup.Nickname);
+				this.SendPassword(Client.Setup.Password);
+			this.SendNickname(Client.Setup.Nickname);
+			this.SendUsername(Client.Setup.Username ?? Client.Setup.Nickname, Client.Setup.Realname ?? Client.Setup.Nickname);
 		}
 
 		public override void OnRegister()
 		{
 			foreach (var channel in Client.Setup.AutoJoinChannels)
-				Client.Join(channel);
+				this.Join(channel);
+		}
+
+		public void WriteLine(string line)
+		{
+			sendQueue.Enqueue(line);
 		}
 	}
 }

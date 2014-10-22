@@ -9,6 +9,7 @@ namespace CSBot
 {
 	public class IrcClient : MarshalByRefObject, IDisposable
 	{
+		public bool Connected { get { return !disposed && socket != null && socket.Connected; } }
 		public IrcClientSetup Setup { get; private set; }
 
 		internal event Action OnConnect = () => { };
@@ -42,13 +43,10 @@ namespace CSBot
 			Console.WriteLine("Connected");
 			OnConnect();
 
-			throttleTimer.Elapsed += ThrottleTimerElapsed;
-			throttleTimer.Start();
-
 			try
 			{
 				string l;
-				while (!disposed && (l = reader.ReadLine()) != null)
+				while (Connected && (l = reader.ReadLine()) != null)
 				{
 					var line = l;
 					Console.WriteLine(line);
@@ -57,8 +55,6 @@ namespace CSBot
 			}
 			finally
 			{
-				throttleTimer.Stop();
-
 				if (socket != null)
 					socket.Close();
 				if (stream != null)
@@ -79,7 +75,7 @@ namespace CSBot
 
 		public void WriteLine(string line)
 		{
-			sendQueue.Enqueue(line);
+			writer.WriteLine(line);
 		}
 
 		public void Close()
@@ -90,26 +86,6 @@ namespace CSBot
 		void IDisposable.Dispose()
 		{
 			Close();
-		}
-
-		// todo: move to IrcLogic
-		const int MaxThrottleDelay = 1000;
-		readonly Timer throttleTimer = new Timer(MaxThrottleDelay / 10);
-		readonly ConcurrentQueue<string> sendQueue = new ConcurrentQueue<string>();
-		int throttleDelay;
-
-		void ThrottleTimerElapsed(object sender, ElapsedEventArgs e)
-		{
-			throttleDelay = Math.Max(throttleDelay - MaxThrottleDelay / 10, 0);
-			if (throttleDelay == 0 && !disposed)
-			{
-				string line;
-				if (sendQueue.TryDequeue(out line))
-				{
-					writer.WriteLine(line);
-					throttleDelay += MaxThrottleDelay;
-				}
-			}
 		}
 	}
 }

@@ -12,9 +12,9 @@ namespace CSBot
 			return moduleManager.LoadedModules.Values.Select(m => m.Module as T).FirstOrDefault(m => m != null);
 		}
 
-		public static void InvokeModules(this ModuleManager self, Action<CSBotModule> func)
+		public static void InvokeModules(this ModuleManager moduleManager, Action<CSBotModule> func)
 		{
-			foreach (var module in self.LoadedModules)
+			foreach (var module in moduleManager.LoadedModules)
 			{
 				try
 				{

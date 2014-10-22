@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using CSBot;
 using IrcLogicModule;
 
@@ -10,6 +11,8 @@ namespace AdminModule
 		{
 			if (user != Client.Setup.AdminUser)
 				return;
+
+			var logic = ModuleManager.Get<IrcLogic>();
 
 			if (message.StartsWith("!loadmod ", StringComparison.OrdinalIgnoreCase))
 			{
@@ -24,14 +27,21 @@ namespace AdminModule
 			}
 
 			else if (message.Equals("!loadedmods", StringComparison.OrdinalIgnoreCase))
-				Client.SendMessageReply(user, target, string.Join(", ", ModuleManager.LoadedModules.Keys));
+				logic.SendMessageReply(user, target, string.Join(", ", ModuleManager.LoadedModules.Keys));
 
 			else if (message.StartsWith("!send ", StringComparison.OrdinalIgnoreCase))
-				Client.WriteLine(message.Substring(message.IndexOf(' ') + 1).Replace("\\n", "\n"));
+				logic.WriteLine(message.Substring(message.IndexOf(' ') + 1).Replace("\\n", "\n"));
 
 			else if (message.StartsWith("!say ", StringComparison.OrdinalIgnoreCase))
 				foreach (var line in message.Substring(message.IndexOf(' ') + 1).Split(new[] { "\\n" }, StringSplitOptions.RemoveEmptyEntries))
-					Client.SendMessageReply(user, target, line);
+					logic.SendMessageReply(user, target, line);
+
+			else if (message.Equals("!uptime", StringComparison.OrdinalIgnoreCase))
+			{
+				var uptime = DateTime.Now - Process.GetCurrentProcess().StartTime;
+				logic.SendMessageReply(user, target, string.Format("Uptime: {0} days, {1} hours, {2} minutes, {3} seconds", uptime.Days, uptime.Hours, uptime.Minutes, uptime.Seconds));
+			}
+			
 		}
 	}
 }
