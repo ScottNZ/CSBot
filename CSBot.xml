@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<IrcClientSetup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Nickname></Nickname>
+  <Username></Username>
+  <Realname></Realname>
+  <ServerHostname></ServerHostname>
+  <Port>6667</Port>
+  <IOTimeout>360000</IOTimeout>
+  <AdminUser></AdminUser>
+  <AutoJoinChannels>
+    <string></string>
+  </AutoJoinChannels>
+</IrcClientSetup>
